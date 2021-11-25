@@ -5,7 +5,6 @@
 #include <string.h>
 
 
-
 int menu_input();
 void menu();
 void menuLogin();
@@ -18,7 +17,7 @@ void withdrawal();
 void deposit();
 void display_account_summary();
 void clear_screen();
-
+void add_percent();
 
 
 
@@ -27,7 +26,7 @@ struct Bank_account
     char CIN[20];
     char first_name[20];
     char last_name[20];
-    int current_amount;
+    float current_amount;
 }accounts[255];
 
 
@@ -57,6 +56,10 @@ int main(){
                 clear_screen();
                 display();
                 break;
+            case 4:
+                clear_screen();
+                add_percent();
+                break;
             case 0:
                 exit(0);
                 break;
@@ -73,10 +76,11 @@ void menu()
 {
     printf("//______Welcome to your bank service!______//\n \n \n");
     printf("Current options:\n \n");
-    printf("1-Register a new account.\n");
-    printf("2-Login by CIN.\n");
-    printf("3-View your accounts.\n");
-    printf("0-Exit.\n\n");
+    printf("1 - Register a new account.\n");
+    printf("2 - Login by CIN.\n");
+    printf("3 - View your accounts.\n");
+    printf("4 - Include 1.3%% bonus for the first 3 accounts.\n");
+    printf("0 - Exit.\n\n");
     printf("//__State your choice:__//\n");
 }
 
@@ -201,9 +205,9 @@ int menu_input()
 void withdrawal()
 {
     current_account_header();
-    int withdraw = 0;
+    float withdraw = 0;
     printf("\nPlease enter an amount to withdraw: ");
-    scanf("%d",&withdraw);
+    scanf("%f",&withdraw);
 
     if (accounts[current_bank_account].current_amount < withdraw)
     {
@@ -220,9 +224,9 @@ void withdrawal()
 void deposit()
 {
     current_account_header();
-    int deposit = 0;
+    float deposit = 0;
     printf("\nPlease enter an amount to deposit: ");
-    scanf("%d",&deposit);
+    scanf("%f",&deposit);
     accounts[current_bank_account].current_amount += deposit;
     printf("\nDeposit was successful!");
 }
@@ -233,7 +237,7 @@ void display_account_summary()
     printf("\nCIN: %s",accounts[current_bank_account].CIN);
     printf("\nFirst Name: %s",accounts[current_bank_account].first_name);
     printf("\nLast Name: %s", accounts[current_bank_account].last_name);
-    printf("\nAmount: %d",accounts[current_bank_account].current_amount);
+    printf("\nAmount: %.2f MAD",accounts[current_bank_account].current_amount);
 }
 
 void display()
@@ -295,7 +299,7 @@ void normalDisplay()
                 printf("\n\nCIN: %s",accounts[i].CIN);
                 printf("\nFirst name: %s",accounts[i].first_name);
                 printf("\nLast name: %s",accounts[i].last_name);
-                printf("\nAmount: %s\n\n",accounts[i].current_amount);
+                printf("\nAmount: %.2f MAD\n\n",accounts[i].current_amount);
             }
             printf("\n//____________________________________//\n\n\n");
         }
@@ -339,7 +343,7 @@ void displayAsc()
             printf("\nCIN: %s",accounts[i].CIN);
             printf("\nFirst Name: %s",accounts[i].first_name);
             printf("\nLast Name: %s",accounts[i].last_name);
-            printf("\nAmount: %d\n\n",accounts[i].current_amount);
+            printf("\nAmount: %.2f MAD\n\n",accounts[i].current_amount);
         }
 
 
@@ -383,9 +387,37 @@ void displayDesc()
             printf("\nCIN: %s",accounts[i].CIN);
             printf("\nFirst Name: %s",accounts[i].first_name);
             printf("\nLast Name: %s",accounts[i].last_name);
-            printf("\nAmount: %d\n\n",accounts[i].current_amount);
+            printf("\nAmount: %.2f MAD\n\n",accounts[i].current_amount);
         }
 
+}
+void add_percent(){
+    struct Bank_account temp_account;
+    int i, j;
+    if (bank_accounts_count == 0)
+    {
+        printf("\nThere are no bank accounts\n");
+
+
+    }
+    else
+    {
+        for (i=0; i<bank_accounts_count; i++)
+        {
+            for(j=0; j<bank_accounts_count-1; j++){
+                if(accounts[j].current_amount<accounts[j+1].current_amount){
+                    temp_account=accounts[j];
+                    accounts[j]=accounts[j+1];
+                    accounts[j+1]=temp_account;
+                }
+            }
+        }
+        for(i=0;(i<bank_accounts_count)&&(i<3);i++){
+            accounts[i].current_amount *= 1.013;
+            printf("\n Added 1.3% bonus!\n");
+        }
+
+    }
 }
 
 void clear_screen()
@@ -393,4 +425,3 @@ void clear_screen()
 
     system("cls");
 }
-
